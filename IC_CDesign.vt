@@ -1,0 +1,26 @@
+`timescale 1 ns/ 1 ps
+module IC;
+reg clk;
+wire [16:0]dividend;
+wire [16:0]divisor;
+wire [16:0]remainder;
+wire [16:0]result;
+
+IC_CDesign i1(
+	.clk(clk),
+	.dividend(dividend),
+	.divisor(divisor),
+	.remainder(remainder),
+	.result(result));
+
+always 
+	#10 clk=~clk;
+
+initial
+begin
+	clk=0;
+	//dividend=17'b0_1010_0000_1010_0000;
+	//divisor=17'b0_0001_1010_0001_1010;
+	#1000 $stop;
+end
+endmodule

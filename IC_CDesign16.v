@@ -35,10 +35,14 @@ Last Err/Thought: ......
 module IC_CDesign(//output [1:0]sign,	//两个1位符号位
 						output reg [16:0]remainder,	//16是最高位
 						output reg [16:0]result,
-						input [16:0]dividend,
-						input [16:0]divisor,
+						output [16:0]dividend,
+						output [16:0]divisor,
 						input clk);
 
+wire [16:0]dividendori=17'b0_1010_0000_1010_0000;
+wire [16:0]divisorori=17'b0_0001_1010_0001_1010;
+assign dividend=dividendori;
+assign divisor=divisorori;
 wire [17:0]dividendtmp;
 wire [17:0]divisortmp[16:0];
 wire [17:0]remaindertmp[17:0];
@@ -48,8 +52,8 @@ assign resulttmp[0]=17'b0_0000_0000_0000_0000;
 wire resone[17:0];
 assign resone[0]=1'b1;	//首次操作为减除数
 
-ireg irA0(dividendtmp,dividend,clk);
-chose choB1(divisortmp[0],divisor,resone[0],clk);
+ireg irA0(dividendtmp,dividendori,clk);
+chose choB1(divisortmp[0],divisorori,resone[0],clk);
 adder addA1(remaindertmp[0],resone[1],dividendtmp,divisortmp[0],clk);
 shift shiA1(remaindershitmp[0],resulttmp[1],remaindertmp[0],resulttmp[0],resone[1],clk);
 
@@ -299,38 +303,34 @@ if(!rrreg)
 endmodule
 
 
-
-
-
 /*激励
-*/
-`timescale 1ns/1ps
+`timescale 1 ns/ 1 ps
 module IC;
+reg clk;
+wire [16:0]dividend;
+wire [16:0]divisor;
 wire [16:0]remainder;
 wire [16:0]result;
-reg [16:0]divisor;
-reg [16:0]dividend;
-reg clk;
+
+IC_CDesign i1(
+	.clk(clk),
+	.dividend(dividend),
+	.divisor(divisor),
+	.remainder(remainder),
+	.result(result));
+
+always 
+	#10 clk=~clk;
 
 initial
 begin
-	clk=1'b0;
-	forever #10 clk=~clk;
-end
-
-
-initial
-begin
-	dividend=17'b0_1010_0000_1010_0000;
-	divisor=17'b0_0001_1010_0001_1010;
+	clk=0;
+	//dividend=17'b0_1010_0000_1010_0000;
+	//divisor=17'b0_0001_1010_0001_1010;
 	#1000 $stop;
 end
-
-
-IC_CDesign icw(remainder,result,dividend,divisor,clk);
 endmodule
-
-
+*/
 
 
 
